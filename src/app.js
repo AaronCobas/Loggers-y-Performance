@@ -31,7 +31,7 @@ if(cluster.isPrimary){
     cluster.on("exit",()=>console.log("Proceso muerto"))
 }else{
     console.log("Proceso worker ejecutado con PID "+process.pid)
-    app.listen(8080,()=>console.log("Listening"))
+    app.listen(config.app.PORT,()=>console.log("Listening on "+ config.app.PORT))
 }
 
 app.use(express.static(__dirname+"/public"));
