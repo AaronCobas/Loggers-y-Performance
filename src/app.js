@@ -23,16 +23,16 @@ import os from "os";
 const app = express();
 const CPUs = os.cpus().length;
 
-if(cluster.isPrimary){
-    console.log("Proceso primario ejecutándose con PID " + process.pid)
-    for(let i=0;i<CPUs;i++){
-        cluster.fork();
-    }
-    cluster.on("exit",()=>console.log("Proceso muerto"))
-}else{
-    console.log("Proceso worker ejecutado con PID "+process.pid)
-    app.listen(config.app.PORT,()=>console.log("Listening on "+ config.app.PORT))
-}
+// if(cluster.isPrimary){
+//     console.log("Proceso primario ejecutándose con PID " + process.pid)
+//     for(let i=0;i<CPUs;i++){
+//         cluster.fork();
+//     }
+//     cluster.on("exit",()=>console.log("Proceso muerto"))
+// }else{
+//     console.log("Proceso worker ejecutado con PID "+process.pid)
+//     app.listen(config.app.PORT,()=>console.log("Listening on "+ config.app.PORT))
+// }
 
 app.use(express.static(__dirname+"/public"));
 app.use(express.json());
@@ -64,8 +64,9 @@ app.use("/api/productos",productsRouter);
 app.use("/",mChatRouter)
 app.use("/", loginRouter)
 app.use("/",objectProcessRouter)
-// const server = app.listen(config.app.PORT, ()=>console.log(`Escuchando en ${config.app.PORT}`))
-// const io = new Server(server);
+const PORT = process.env.PORT || 8080
+const server = app.listen(PORT, ()=>console.log(`Escuchando en ${PORT}`))
+const io = new Server(server);
 
 const productSQL = new containerSQL(sqliteOptions, "products")
 const messagesSQL = new containerSQL(sqliteOptions, "messages")
